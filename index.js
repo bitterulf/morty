@@ -40,6 +40,8 @@ const state = {
 };
 
 const filterStateForUser = function(state, id) {
+    state = JSON.parse(JSON.stringify(state));
+
     state.users = state.users.map(function(user) {
         if (user.id == id) return user;
 
