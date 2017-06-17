@@ -39,6 +39,14 @@ const state = {
     portals: []
 };
 
+const filterStateForUser = function(state, id) {
+    state.portals = state.portals.filter(function(portal) {
+        return portal.owner == id;
+    });
+
+    return state;
+};
+
 const dispatch = function(action) {
     switch (action.type) {
         case 'addUser':
@@ -52,9 +60,10 @@ const dispatch = function(action) {
     }
 
     primus.forEach(function (spark, id, connections) {
+      console.log('ideo', id);
       // if (spark.query.foo !== 'bar') return;
 
-      spark.write(state);
+      spark.write(filterStateForUser(state, id));
     });
 };
 
