@@ -104,10 +104,19 @@ const dispatch = function(action) {
                 state.portals.push({
                     owner: action.id,
                     x: user.x,
-                    y: user.y
+                    y: user.y,
+                    timer: 10
                 });
             }
 
+        break;
+        case 'tick':
+            state.portals = state.portals.map(function(portal) {
+                portal.timer--;
+                return portal;
+            }).filter(function(portal) {
+                return portal.timer >= 0;
+            });
         break;
         case 'right':
             state.users = state.users.map(function(user) {
@@ -170,6 +179,10 @@ primus.on('connection', function (spark) {
         dispatch(data);
     });
 });
+
+setInterval(function() {
+    dispatch({type: 'tick', payload: {} });
+}, 1000);
 
 server.start((err) => {
 

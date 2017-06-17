@@ -64,7 +64,7 @@
                                 return m('div', {className: 'user', style: 'left: '+user.x*50+'px; top: '+user.y*50+'px;' }, user.id + (user.money ? ' money: ' + user.money : '') );
                             })),
                             m('div', {}, state.portals.map(function(portal) {
-                                return m('div', {className: 'portal', style: 'left: '+portal.x*50+'px; top: '+portal.y*50+'px;' }, 'portal from '+portal.owner);
+                                return m('div', {className: 'portal', style: 'left: '+portal.x*50+'px; top: '+portal.y*50+'px;' }, 'portal '+portal.timer+' from '+portal.owner);
                             }))
                         ])
                     ])
