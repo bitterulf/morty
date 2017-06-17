@@ -40,6 +40,14 @@ const state = {
 };
 
 const filterStateForUser = function(state, id) {
+    state.users = state.users.map(function(user) {
+        if (user.id == id) return user;
+
+        return {
+            id: user.id
+        };
+    });
+
     state.portals = state.portals.filter(function(portal) {
         return portal.owner == id;
     });
@@ -68,7 +76,11 @@ const dispatch = function(action) {
 };
 
 primus.on('connection', function (spark) {
-    dispatch({type: 'addUser', payload: { id: spark.id } });
+    dispatch({type: 'addUser', payload: {
+        id: spark.id,
+        money: 100
+    } });
+
     spark.on('data', function (data) {
         data.id = spark.id;
         dispatch(data);
