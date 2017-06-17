@@ -40,6 +40,12 @@ const state = {
 };
 
 const filterStateForUser = function(state, id) {
+    const user = state.users.find(function(user) { return user.id == id});
+
+    if (!user) {
+        return {};
+    }
+
     state = JSON.parse(JSON.stringify(state));
 
     state.users = state.users.map(function(user) {
@@ -53,7 +59,7 @@ const filterStateForUser = function(state, id) {
     });
 
     state.portals = state.portals.filter(function(portal) {
-        return portal.owner == id;
+        return portal.owner == id || (user.x == portal.x && user.y == portal.y);
     });
 
     return state;
