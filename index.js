@@ -48,6 +48,14 @@ const filterStateForUser = function(state, id) {
 
     state = JSON.parse(JSON.stringify(state));
 
+    state.users = state.users.filter(function(u) {
+        if (Math.abs(user.x - u.x) < 2 && Math.abs(user.y - u.y) < 2) {
+            return true;
+        }
+
+        return false;
+    });
+
     state.users = state.users.map(function(user) {
         if (user.id == id) return user;
 
