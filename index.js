@@ -44,7 +44,9 @@ const filterStateForUser = function(state, id) {
         if (user.id == id) return user;
 
         return {
-            id: user.id
+            id: user.id,
+            x: user.x,
+            y: user.y
         };
     });
 
@@ -63,6 +65,42 @@ const dispatch = function(action) {
         case 'zapp':
             state.portals.push({owner: action.id});
         break;
+        case 'right':
+            state.users = state.users.map(function(user) {
+                if (user.id == action.id && user.x <5 ) {
+                    user.x++;
+                }
+
+                return user;
+            });
+        break;
+        case 'left':
+            state.users = state.users.map(function(user) {
+                if (user.id == action.id && user.x > 0 ) {
+                    user.x--;
+                }
+
+                return user;
+            });
+        break;
+        case 'down':
+            state.users = state.users.map(function(user) {
+                if (user.id == action.id && user.y <5 ) {
+                    user.y++;
+                }
+
+                return user;
+            });
+        break;
+        case 'up':
+            state.users = state.users.map(function(user) {
+                if (user.id == action.id && user.y > 0 ) {
+                    user.y--;
+                }
+
+                return user;
+            });
+        break;
         default:
 
     }
@@ -78,7 +116,9 @@ const dispatch = function(action) {
 primus.on('connection', function (spark) {
     dispatch({type: 'addUser', payload: {
         id: spark.id,
-        money: 100
+        money: 100,
+        x: 0,
+        y: 0
     } });
 
     spark.on('data', function (data) {

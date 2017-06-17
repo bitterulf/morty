@@ -2,6 +2,25 @@
     <head>
         <script src="//unpkg.com/mithril/mithril.js"></script>
         <script src="/primus/primus.js"></script>
+        <style>
+            body {
+                background-color: grey;
+            }
+
+            .map {
+                position: relative;
+                width: 300;
+                height: 300;
+                border: 1px solid black;
+            }
+
+            .user {
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                border: 1px solid blue;
+            }
+        </style>
         <script>
             let state;
 
@@ -18,8 +37,20 @@
                         m('button',  { onclick: function() {
                             primus.write({type: 'zapp', payload: {}});
                         } }, 'portal gun'),
-                        m('div', {}, state.users.map(function(user) {
-                            return m('div', user.id + (user.money ? ' money: ' + user.money : '') );
+                        m('button',  { onclick: function() {
+                            primus.write({type: 'left', payload: {}});
+                        } }, 'left'),
+                        m('button',  { onclick: function() {
+                            primus.write({type: 'right', payload: {}});
+                        } }, 'right'),
+                        m('button',  { onclick: function() {
+                            primus.write({type: 'up', payload: {}});
+                        } }, 'up'),
+                        m('button',  { onclick: function() {
+                            primus.write({type: 'down', payload: {}});
+                        } }, 'down'),
+                        m('div', {className: 'map'}, state.users.map(function(user) {
+                            return m('div', {className: 'user', style: 'left: '+user.x*50+'px; top: '+user.y*50+'px;' }, user.id + (user.money ? ' money: ' + user.money : '') );
                         })),
                         m('div', {}, state.portals.map(function(portal) {
                             return m('div', 'portal from '+portal.owner);
