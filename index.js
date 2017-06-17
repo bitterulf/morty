@@ -73,6 +73,8 @@ const filterStateForUser = function(state, id) {
     return state;
 };
 
+let lastSendedState = '';
+
 const dispatch = function(action) {
     const user = state.users.find(function(user) { return user.id == action.id});
 
@@ -158,12 +160,19 @@ const dispatch = function(action) {
 
     }
 
-    primus.forEach(function (spark, id, connections) {
-      console.log('ideo', id);
-      // if (spark.query.foo !== 'bar') return;
+    const newState = JSON.stringify(state);
 
-      spark.write(filterStateForUser(state, id));
-    });
+    if (lastSendedState != newState) {
+        console.log('sending update');
+
+        primus.forEach(function (spark, id, connections) {
+          // if (spark.query.foo !== 'bar') return;
+
+          spark.write(filterStateForUser(state, id));
+        });
+
+        lastSendedState = newState;
+    }
 };
 
 primus.on('connection', function (spark) {
