@@ -74,13 +74,32 @@ const filterStateForUser = function(state, id) {
 };
 
 const dispatch = function(action) {
+    const user = state.users.find(function(user) { return user.id == action.id});
+
     switch (action.type) {
         case 'addUser':
             state.users.push(action.payload);
         break;
-        case 'zapp':
-            const user = state.users.find(function(user) { return user.id == action.id});
+        case 'steal':
+            if (user) {
+                const victim = state.users.find(function(u) { return u.id != user.id && u.x == user.x && u.y == user.y});
 
+                if (victim && victim.money >= 10) {
+                    state.users = state.users.map(function(u) {
+                        if (u.id == user.id) {
+                            u.money += 10;
+                        }
+                        else if (u.id == victim.id) {
+                            u.money -= 10;
+                        }
+
+                        return u;
+                    });
+                };
+            }
+
+        break;
+        case 'zapp':
             if (user) {
                 state.portals.push({
                     owner: action.id,

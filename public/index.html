@@ -56,6 +56,9 @@
                         m('button',  { onclick: function() {
                             primus.write({type: 'down', payload: {}});
                         } }, 'down'),
+                        m('button',  { onclick: function() {
+                            primus.write({type: 'steal', payload: {}});
+                        } }, 'steal'),
                         m('div', {className: 'map'}, [
                             m('div', {}, state.users.map(function(user) {
                                 return m('div', {className: 'user', style: 'left: '+user.x*50+'px; top: '+user.y*50+'px;' }, user.id + (user.money ? ' money: ' + user.money : '') );
