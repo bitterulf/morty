@@ -65,7 +65,16 @@ const dispatch = function(action) {
             state.users.push(action.payload);
         break;
         case 'zapp':
-            state.portals.push({owner: action.id});
+            const user = state.users.find(function(user) { return user.id == action.id});
+
+            if (user) {
+                state.portals.push({
+                    owner: action.id,
+                    x: user.x,
+                    y: user.y
+                });
+            }
+
         break;
         case 'right':
             state.users = state.users.map(function(user) {

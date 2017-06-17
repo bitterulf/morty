@@ -20,6 +20,13 @@
                 height: 50px;
                 border: 1px solid blue;
             }
+
+            .portal {
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                border: 1px solid yellow;
+            }
         </style>
         <script>
             let state;
@@ -49,12 +56,14 @@
                         m('button',  { onclick: function() {
                             primus.write({type: 'down', payload: {}});
                         } }, 'down'),
-                        m('div', {className: 'map'}, state.users.map(function(user) {
-                            return m('div', {className: 'user', style: 'left: '+user.x*50+'px; top: '+user.y*50+'px;' }, user.id + (user.money ? ' money: ' + user.money : '') );
-                        })),
-                        m('div', {}, state.portals.map(function(portal) {
-                            return m('div', 'portal from '+portal.owner);
-                        }))
+                        m('div', {className: 'map'}, [
+                            m('div', {}, state.users.map(function(user) {
+                                return m('div', {className: 'user', style: 'left: '+user.x*50+'px; top: '+user.y*50+'px;' }, user.id + (user.money ? ' money: ' + user.money : '') );
+                            })),
+                            m('div', {}, state.portals.map(function(portal) {
+                                return m('div', {className: 'portal', style: 'left: '+portal.x*50+'px; top: '+portal.y*50+'px;' }, 'portal from '+portal.owner);
+                            }))
+                        ])
                     ])
                 }
             }
