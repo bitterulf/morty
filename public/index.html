@@ -15,8 +15,14 @@
 
                     return m('main', [
                         m('h1', {}, 'morty'),
+                        m('button',  { onclick: function() {
+                            primus.write({type: 'zapp', payload: {}});
+                        } }, 'portal gun'),
                         m('div', {}, state.users.map(function(user) {
                             return m('div', user.id);
+                        })),
+                        m('div', {}, state.portals.map(function(portal) {
+                            return m('div', 'portal from '+portal.owner);
                         }))
                     ])
                 }

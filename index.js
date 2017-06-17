@@ -35,13 +35,17 @@ server.route({
 const primus = new Primus(server.listener);
 
 const state = {
-    users: []
+    users: [],
+    portals: []
 };
 
 const dispatch = function(action) {
     switch (action.type) {
         case 'addUser':
             state.users.push(action.payload);
+        break;
+        case 'zapp':
+            state.portals.push({owner: action.id});
         break;
         default:
 
@@ -56,6 +60,10 @@ const dispatch = function(action) {
 
 primus.on('connection', function (spark) {
     dispatch({type: 'addUser', payload: { id: spark.id } });
+    spark.on('data', function (data) {
+        data.id = spark.id;
+        dispatch(data);
+    });
 });
 
 server.start((err) => {
