@@ -2,7 +2,13 @@
     <head>
         <script src="/primus/primus.js"></script>
         <script>
+            let state;
             const primus = Primus.connect();
+
+            primus.on('data', function message(data) {
+                state = data;
+                console.log('Received a new message from the server', data);
+            });
         </script>
         <title>morty</title>
     </head>

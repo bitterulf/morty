@@ -34,8 +34,28 @@ server.route({
 
 const primus = new Primus(server.listener);
 
+const state = {
+    users: []
+};
+
+const dispatch = function(action) {
+    switch (action.type) {
+        case 'addUser':
+            state.users.push(action.payload);
+        break;
+        default:
+
+    }
+
+    primus.forEach(function (spark, id, connections) {
+      // if (spark.query.foo !== 'bar') return;
+
+      spark.write(state);
+    });
+};
+
 primus.on('connection', function (spark) {
-    console.log(spark.id);
+    dispatch({type: 'addUser', payload: { id: spark.id } });
 });
 
 server.start((err) => {
