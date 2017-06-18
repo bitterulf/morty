@@ -36,7 +36,8 @@ const primus = new Primus(server.listener);
 
 const state = {
     users: [],
-    portals: []
+    portals: [],
+    units: []
 };
 
 const filterStateForUser = function(state, id) {
@@ -79,6 +80,8 @@ const dispatch = function(action) {
     const user = state.users.find(function(user) { return user.id == action.id});
 
     switch (action.type) {
+        case 'addUnit':
+            state.units.push(action.payload);
         case 'addUser':
             state.users.push(action.payload);
         break;
@@ -168,7 +171,7 @@ const dispatch = function(action) {
         primus.forEach(function (spark, id, connections) {
           // if (spark.query.foo !== 'bar') return;
 
-          spark.write(filterStateForUser(state, id));
+          spark.write({identity: id, state: filterStateForUser(state, id)});
         });
 
         lastSendedState = newState;
@@ -179,6 +182,12 @@ primus.on('connection', function (spark) {
     dispatch({type: 'addUser', payload: {
         id: spark.id,
         money: 100,
+        x: 0,
+        y: 0
+    } });
+
+    dispatch({type: 'addUnit', payload: {
+        owner: spark.id,
         x: 0,
         y: 0
     } });
