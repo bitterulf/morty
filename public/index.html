@@ -79,19 +79,45 @@
                     }
 
                     let hoverCursor;
+                    let hoverInfo;
 
                     if (hoveredTile) {
                         hoverCursor = m('div', {
                             style: 'border: dashed black 5px; width: 32px; height: 32px; position: absolute; left: '+hoveredTile.x*32+'px; top: '+hoveredTile.y*32+'px;'
-                        })
+                        });
+
+                        hoverInfo = m('div', {},
+                            [
+                                m('h2', 'hovered tile'),
+                                state.units.filter(function(unit) {
+                                    return unit.x == hoveredTile.x && unit.y == hoveredTile.y
+                                }).map(function(unit) {
+                                    return m('div', 'unit '+unit.id+' '+unit.owner);
+                                })
+                            ]
+                        );
                     }
 
                     let clickedCursor;
+                    let clickedInfo;
 
                     if (clickedTile) {
                         clickedCursor = m('div', {
                             style: 'border: solid magenta 5px; width: 32px; height: 32px; position: absolute; left: '+clickedTile.x*32+'px; top: '+clickedTile.y*32+'px;'
                         })
+
+                        clickedInfo = m('div', {},
+                            [
+                                m('h2', 'clicked tile'),
+                                m('div', {},
+                                    state.units.filter(function(unit) {
+                                        return unit.x == clickedTile.x && unit.y == clickedTile.y
+                                    }).map(function(unit) {
+                                        return m('div', 'unit '+unit.id+' '+unit.owner);
+                                    })
+                                )
+                            ]
+                        );
                     }
 
                     return m('main', [
@@ -146,7 +172,9 @@
                                     }
                                 });
                             })),
-                        ])
+                        ]),
+                        hoverInfo,
+                        clickedInfo
                     ])
                 }
             }
