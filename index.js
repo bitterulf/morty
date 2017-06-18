@@ -127,7 +127,7 @@ const dispatch = function(action) {
         break;
         case 'right':
             state.users = state.users.map(function(user) {
-                if (user.id == action.id && user.x <5 ) {
+                if (user.id == action.id && user.x < 15 ) {
                     user.x++;
                 }
 
@@ -145,7 +145,7 @@ const dispatch = function(action) {
         break;
         case 'down':
             state.users = state.users.map(function(user) {
-                if (user.id == action.id && user.y <5 ) {
+                if (user.id == action.id && user.y < 15 ) {
                     user.y++;
                 }
 

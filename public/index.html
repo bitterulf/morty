@@ -9,29 +9,29 @@
 
             .map {
                 position: relative;
-                width: 300;
-                height: 300;
+                width: 512px;
+                height: 512px;
                 border: 1px solid black;
             }
 
             .user {
                 position: absolute;
-                width: 50px;
-                height: 50px;
+                width: 32px;
+                height: 32px;
                 border: 1px solid blue;
             }
 
             .portal {
                 position: absolute;
-                width: 50px;
-                height: 50px;
+                width: 32px;
+                height: 32px;
                 border: 1px solid yellow;
             }
 
             .unit {
                 position: absolute;
-                width: 50px;
-                height: 50px;
+                width: 32px;
+                height: 32px;
                 border: 3px dashed green;
             }
         </style>
@@ -39,6 +39,8 @@
             let identity;
             let state;
             let map;
+            let hoveredTile;
+            let clickedTile;
 
             const primus = Primus.connect();
 
@@ -76,7 +78,21 @@
                         }
                     }
 
-                    console.log(tiles);
+                    let hoverCursor;
+
+                    if (hoveredTile) {
+                        hoverCursor = m('div', {
+                            style: 'border: dashed black 5px; width: 32px; height: 32px; position: absolute; left: '+hoveredTile.x*32+'px; top: '+hoveredTile.y*32+'px;'
+                        })
+                    }
+
+                    let clickedCursor;
+
+                    if (clickedTile) {
+                        clickedCursor = m('div', {
+                            style: 'border: solid magenta 5px; width: 32px; height: 32px; position: absolute; left: '+clickedTile.x*32+'px; top: '+clickedTile.y*32+'px;'
+                        })
+                    }
 
                     return m('main', [
                         m('h1', {}, identity),
@@ -103,16 +119,32 @@
                                 return m('div', {style: 'background-repeat: no-repeat; background-image: url("'+tile.definition.image+'"); background-position: ' + (tile.definition.x * 32 * -1) + 'px ' + (tile.definition.y * 32 * -1) + 'px; width: 32px; height: 32px; position: absolute; left: '+tile.x*32+'px; top: '+tile.y*32+'px;' });
                             })),
                             m('div', {}, state.users.map(function(user) {
-                                return m('div', {className: 'user', style: 'left: '+user.x*50+'px; top: '+user.y*50+'px;' }, user.id + (user.money ? ' money: ' + user.money : '') );
+                                return m('div', {className: 'user', style: 'left: '+user.x*32+'px; top: '+user.y*32+'px;' }, user.id + (user.money ? ' money: ' + user.money : '') );
                             })),
                             m('div', {}, state.portals.map(function(portal) {
-                                return m('div', {className: 'portal', style: 'left: '+portal.x*50+'px; top: '+portal.y*50+'px;' }, 'portal '+portal.timer+' from '+portal.owner);
+                                return m('div', {className: 'portal', style: 'left: '+portal.x*32+'px; top: '+portal.y*32+'px;' }, 'portal '+portal.timer+' from '+portal.owner);
                             })),
                             m('div', {}, state.units.map(function(unit) {
-                                return m('div', {className: 'unit', style: 'left: '+unit.x*50+'px; top: '+unit.y*50+'px;' }, 'unit '+unit.id+' '+unit.owner);
+                                return m('div', {className: 'unit', style: 'left: '+unit.x*32+'px; top: '+unit.y*32+'px;' }, 'unit '+unit.id+' '+unit.owner);
                             })),
+                            clickedCursor,
+                            hoverCursor,
                             m('div', {}, tiles.map(function(tile) {
-                                return m('div', {style: 'border: dashed black 1px; width: 32px; height: 32px; position: absolute; left: '+tile.x*32+'px; top: '+tile.y*32+'px;' });
+                                return m('div', {
+                                    style: 'border: dashed black 1px; width: 32px; height: 32px; position: absolute; left: '+tile.x*32+'px; top: '+tile.y*32+'px;',
+                                    onclick: function() {
+                                        clickedTile = {
+                                            x: tile.x,
+                                            y: tile.y
+                                        };
+                                    },
+                                    onmouseover: function() {
+                                        hoveredTile = {
+                                            x: tile.x,
+                                            y: tile.y
+                                        };
+                                    }
+                                });
                             })),
                         ])
                     ])
