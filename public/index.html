@@ -38,14 +38,45 @@
         <script>
             let identity;
             let state;
+            let map;
 
             const primus = Primus.connect();
 
             var Hello = {
                 view: function() {
-                    if (!state) {
+                    if (!state || !map) {
                         return m('div', 'loading');
                     }
+
+                    const tiles = [];
+
+                    const tileset = map.tilesets[0];
+                    tileset.height = tileset.imageheight / tileset.tileheight;
+                    tileset.width =tileset.imagewidth / tileset.tilewidth;
+
+                    const tileDefinition = [];
+
+                    for (let y = 0; y < tileset.height; y++) {
+                        for (let x = 0; x < tileset.width; x++) {
+                            const tileId = tileset.firstgid + (y * tileset.width) + x;
+                            tileDefinition[tileId] = {
+                                x: x,
+                                y: y,
+                                image: tileset.image
+                            };
+                        }
+                    }
+
+                    for (let y = 0; y < map.height; y++) {
+                        for (let x = 0; x < map.width; x++) {
+                            const index = y * map.width + x;
+                            const tileDefId = map.layers[0].data[index];
+
+                            tiles.push({x: x, y: y, definition: tileDefinition[tileDefId]});
+                        }
+                    }
+
+                    console.log(tiles);
 
                     return m('main', [
                         m('h1', {}, identity),
@@ -68,6 +99,9 @@
                             primus.write({type: 'steal', payload: {}});
                         } }, 'steal'),
                         m('div', {className: 'map'}, [
+                            m('div', {}, tiles.map(function(tile) {
+                                return m('div', {style: 'background-repeat: no-repeat; background-image: url("'+tile.definition.image+'"); background-position: ' + (tile.definition.x * 32 * -1) + 'px ' + (tile.definition.y * 32 * -1) + 'px; width: 32px; height: 32px; position: absolute; left: '+tile.x*32+'px; top: '+tile.y*32+'px;' });
+                            })),
                             m('div', {}, state.users.map(function(user) {
                                 return m('div', {className: 'user', style: 'left: '+user.x*50+'px; top: '+user.y*50+'px;' }, user.id + (user.money ? ' money: ' + user.money : '') );
                             })),
@@ -76,7 +110,10 @@
                             })),
                             m('div', {}, state.units.map(function(unit) {
                                 return m('div', {className: 'unit', style: 'left: '+unit.x*50+'px; top: '+unit.y*50+'px;' }, 'unit '+unit.id+' '+unit.owner);
-                            }))
+                            })),
+                            m('div', {}, tiles.map(function(tile) {
+                                return m('div', {style: 'border: dashed black 1px; width: 32px; height: 32px; position: absolute; left: '+tile.x*32+'px; top: '+tile.y*32+'px;' });
+                            })),
                         ])
                     ])
                 }
@@ -87,6 +124,14 @@
                 identity = data.identity;
                 m.redraw();
                 console.log('Received a new message from the server', data);
+            });
+
+            m.request({
+                method: 'GET',
+                url: '/map.json'
+            })
+            .then(function(result) {
+                map = result;
             });
         </script>
         <title>morty</title>
