@@ -118,7 +118,25 @@
                             m('div', 'unit ' + selectedUnit.id),
                             m('button', {onclick: function() {
                                 selectedUnitId = undefined;
-                            }}, 'unselect')
+                            }}, 'unselect'),
+                            m('button',  { onclick: function() {
+                                primus.write({type: 'zapp', payload: {id: selectedUnitId}});
+                            } }, 'portal gun'),
+                            m('button',  { onclick: function() {
+                                primus.write({type: 'left', payload: {id: selectedUnitId}});
+                            } }, 'left'),
+                            m('button',  { onclick: function() {
+                                primus.write({type: 'right', payload: {id: selectedUnitId}});
+                            } }, 'right'),
+                            m('button',  { onclick: function() {
+                                primus.write({type: 'up', payload: {id: selectedUnitId}});
+                            } }, 'up'),
+                            m('button',  { onclick: function() {
+                                primus.write({type: 'down', payload: {id: selectedUnitId}});
+                            } }, 'down'),
+                            m('button',  { onclick: function() {
+                                primus.write({type: 'steal', payload: {id: selectedUnitId}});
+                            } }, 'steal')
                         ]);
                     }
 
@@ -151,24 +169,6 @@
 
                     return m('main', [
                         m('h1', {}, identity),
-                        m('button',  { onclick: function() {
-                            primus.write({type: 'zapp', payload: {}});
-                        } }, 'portal gun'),
-                        m('button',  { onclick: function() {
-                            primus.write({type: 'left', payload: {}});
-                        } }, 'left'),
-                        m('button',  { onclick: function() {
-                            primus.write({type: 'right', payload: {}});
-                        } }, 'right'),
-                        m('button',  { onclick: function() {
-                            primus.write({type: 'up', payload: {}});
-                        } }, 'up'),
-                        m('button',  { onclick: function() {
-                            primus.write({type: 'down', payload: {}});
-                        } }, 'down'),
-                        m('button',  { onclick: function() {
-                            primus.write({type: 'steal', payload: {}});
-                        } }, 'steal'),
                         m('div', {className: 'map'}, [
                             m('div', {}, tiles.map(function(tile) {
                                 return m('div', {style: 'background-repeat: no-repeat; background-image: url("'+tile.definition.image+'"); background-position: ' + (tile.definition.x * 32 * -1) + 'px ' + (tile.definition.y * 32 * -1) + 'px; width: 32px; height: 32px; position: absolute; left: '+tile.x*32+'px; top: '+tile.y*32+'px;' });
