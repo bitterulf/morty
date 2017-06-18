@@ -41,6 +41,7 @@
             let map;
             let hoveredTile;
             let clickedTile;
+            let selectedUnitId;
 
             const primus = Primus.connect();
 
@@ -101,6 +102,26 @@
                     let clickedCursor;
                     let clickedInfo;
 
+                    let selectedUnit;
+
+                    if (selectedUnitId) {
+                        selectedUnit = state.units.find(function(unit) {
+                            return unit.id == selectedUnitId;
+                        });
+                    }
+
+                    let selectedUnitInfo;
+
+                    if (selectedUnitId) {
+                        selectedUnitInfo = m('div', {}, [
+                            m('h2', 'selected unit'),
+                            m('div', 'unit ' + selectedUnit.id),
+                            m('button', {onclick: function() {
+                                selectedUnitId = undefined;
+                            }}, 'unselect')
+                        ]);
+                    }
+
                     if (clickedTile) {
                         clickedCursor = m('div', {
                             style: 'border: solid magenta 5px; width: 32px; height: 32px; position: absolute; left: '+clickedTile.x*32+'px; top: '+clickedTile.y*32+'px;'
@@ -113,7 +134,15 @@
                                     state.units.filter(function(unit) {
                                         return unit.x == clickedTile.x && unit.y == clickedTile.y
                                     }).map(function(unit) {
-                                        return m('div', 'unit '+unit.id+' '+unit.owner);
+                                        if (unit.owner != identity) {
+                                            return m('span', 'unit '+unit.id+' '+unit.owner);
+                                        }
+
+                                        return m('button', {
+                                            onclick: function() {
+                                                selectedUnitId = unit.id;
+                                            }
+                                        }, 'unit '+unit.id);
                                     })
                                 )
                             ]
@@ -173,8 +202,9 @@
                                 });
                             })),
                         ]),
-                        hoverInfo,
-                        clickedInfo
+                        selectedUnitInfo,
+                        clickedInfo,
+                        hoverInfo
                     ])
                 }
             }
