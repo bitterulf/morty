@@ -5,6 +5,7 @@ const Primus = require('primus');
 const Path = require('path');
 const Hapi = require('hapi');
 const Inert = require('inert');
+const generateId = require('shortid').generate;
 
 const server = new Hapi.Server({
     connections: {
@@ -81,6 +82,7 @@ const dispatch = function(action) {
 
     switch (action.type) {
         case 'addUnit':
+            action.payload.id = generateId();
             state.units.push(action.payload);
         case 'addUser':
             state.users.push(action.payload);

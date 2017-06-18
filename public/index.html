@@ -75,7 +75,7 @@
                                 return m('div', {className: 'portal', style: 'left: '+portal.x*50+'px; top: '+portal.y*50+'px;' }, 'portal '+portal.timer+' from '+portal.owner);
                             })),
                             m('div', {}, state.units.map(function(unit) {
-                                return m('div', {className: 'unit', style: 'left: '+unit.x*50+'px; top: '+unit.y*50+'px;' }, 'unit '+unit.owner);
+                                return m('div', {className: 'unit', style: 'left: '+unit.x*50+'px; top: '+unit.y*50+'px;' }, 'unit '+unit.id+' '+unit.owner);
                             }))
                         ])
                     ])
